@@ -9,7 +9,7 @@
 ## 修改配置
 ### 1 找到gopath 下修改 go/src/github.com/dooyourbest/syncfile/syncfile/common.go ，
 ### 2 修改26 -29行即可 （本地和开发机此文件需要一致，修改好一份，粘贴过去替换即可）
- 注意：host需要加上schema 即 localhost需要写成http:\\localhost
+ 注意：host需要加上schema 即 localhost需要写成http:\\\localhost
 ## 编译
 go install syncfile
  本地开发机都需要编译
