@@ -26,7 +26,7 @@ type Client struct {
 
 func (c Client) post() (*http.Response, error) {
 	fmt.Print("client->post")
-	c.remoteUrl = targetUrl +"/"+ c.opreate
+	c.remoteUrl = REMOTE_HOST+":"+REMOTE_PORT +"/"+ c.opreate
 	print(c.remoteUrl)
 	print(c.opreate)
 	var resp *http.Response
