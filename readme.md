@@ -16,12 +16,12 @@ go install syncfile
 
 ### 即可享受伪samba，
 命令:
---  本地运行     syncfile local 命令
---  开发机运行  syncfile dev 命令
+##### 本地运行     syncfile local 命令
+##### 开发机运行  syncfile dev 命令
   两边同时开启即可，本地修改回同步到开发机
  其他
---  手动push文件  syncfile push 本地文件绝对路径
---  手动get文件  syncfile get 线上文件绝对路径
+##### 手动push文件  syncfile push 本地文件绝对路径
+##### 手动get文件  syncfile get 线上文件绝对路径
   需要完善：
   #### 功能点：
   
