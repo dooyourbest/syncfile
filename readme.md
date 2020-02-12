@@ -1,7 +1,5 @@
 ## 取代samba进行代码同步
-### how to use 
 #### 代码分为两端 client server,需要在本地和开发机同时安装代码，才能进行通信
-### how to configure
 ## 安装和配置
 ### 1 依赖于 github.com/fsnotify/fsnotify
    没有安装需要安装一下 go get  github.com/fsnotify/fsnotify
