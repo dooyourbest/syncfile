@@ -3,31 +3,31 @@ package main
 import (
 	"fmt"
 	"os"
-	. "syncfile/syncfile"
+	"github.com/dooyourbest/syncfile/syncfile"
 )
 
 func main() {
 	param := os.Args[1]
 	fmt.Println(param)
 	switch param {
-	case RUN_LOCAL:
+	case syncfile.RUN_LOCAL:
 		fmt.Println("watch")
-		WatchDir()
-	case RUN_DEV:
+		syncfile.WatchDir()
+	case syncfile.RUN_DEV:
 		fmt.Print("listen")
-		Listen()
-	case GET_FILE:
+		syncfile.Listen()
+	case syncfile.GET_FILE:
 		fmt.Println("getfile")
-		GetFile(os.Args[2])
-	case PUSH_FILE:
+		syncfile.GetFile(os.Args[2])
+	case syncfile.PUSH_FILE:
 		fmt.Println("pushfile")
-		PushFile(os.Args[2])
-	case LIST_FILE:
+		syncfile.PushFile(os.Args[2])
+	case syncfile.LIST_FILE:
 		fmt.Println("list file")
-		GetList()
-	case GET_ALL_DEV:
+		syncfile.GetList()
+	case syncfile.GET_ALL_DEV:
 		fmt.Println("GET ALL")
-		GetAllDev()
+		syncfile.GetAllDev()
 	}
 
 }
