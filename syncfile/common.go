@@ -23,10 +23,16 @@ const (
 	FILE_NAME_KEY = "filename"
 
 	//需要进行修改的内容
-	REMOTE_PORT    = "8089"                              //请求的port
+	REMOTE_PORT    = "8081"                              //请求的port
+
 	REMOTE_HOST    = "http://localhost"                  //server端host
+	USE_HTTPS      = false //默认不使用https
+
 	localDirPath   = "/Users/zhangziang_cd/go/src/test1" //本地监听的目录 绝对路径
 	developDirPath = "/Users/zhangziang_cd/go/src/test"  //远程代码目录 绝对路径
+
+
+
 )
 
 var DirIgnoreWord = []string{".git"}                         //监听中忽略目录
