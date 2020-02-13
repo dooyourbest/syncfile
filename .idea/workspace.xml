@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="5d9041c7-ba08-48c5-bda8-192079079a68" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="syncfile" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="C:\Go" />
+  <component name="ProjectId" id="1Xhr5otuicUmYTLiZ2lKNcqRVjZ" />
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../test1/dir" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\go\src\test1\dir" />
+      <recent name="C:\Users\Administrator\go\src\test1" />
+      <recent name="C:\Users\Administrator\Desktop\sync\sync" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\sync" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Build.go build syncfile123">
+    <configuration name="go build syncfile" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="syncfile" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="get  C:\Users\Administrator \go\src\test\12.txt " />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="syncfile" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build syncfile123" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
+      <module name="syncfile" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <parameters value="get  C:\Users\Administrator\go\src\test\12.txt " />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/sync.go" />
+      <package value="syncfile" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestIgnore in syncfile/syncfile" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="syncfile" />
+      <working_directory value="$PROJECT_DIR$/syncfile" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="syncfile/syncfile" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestIgnore$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build syncfile" />
+      <item itemvalue="Go Build.go build syncfile123" />
+      <item itemvalue="Go Test.TestIgnore in syncfile/syncfile" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build syncfile123" />
+        <item itemvalue="Go Test.TestIgnore in syncfile/syncfile" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>

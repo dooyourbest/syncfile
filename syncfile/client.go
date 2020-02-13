@@ -25,8 +25,8 @@ type Client struct {
 func (c Client) post() (*http.Response, error) {
 	fmt.Print("client->post")
 	c.remoteUrl = REMOTE_HOST + ":" + REMOTE_PORT + "/" + c.opreate
-	print(c.remoteUrl)
-	print(c.opreate)
+	fmt.Println(c.remoteUrl)
+	fmt.Println(c.opreate)
 	var resp *http.Response
 	var err error
 	if c.opreate == OPR_CREATE {

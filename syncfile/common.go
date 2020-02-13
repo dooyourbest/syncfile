@@ -14,11 +14,18 @@ const (
 
 	// syncfile push 本地文件绝对地址，手动将本地文件推到线上对应目录
 	PUSH_FILE = "push"
+	LIST_FILE = "list"
+	GET_ALL_DEV="getall"
+
+	LIST_FILE_NAME = "index.xml"
+	PATH_IS_DIR = "1"
+	PATH_IS_FILE = "0"
 
 	OPR_REMOVE   = "rm"       //删除操作对应的urlpath
 	OPR_CREATE   = "create"   //创建文件操作对应的urlpath
 	OPR_DIR_ADD  = "addDir"   //创建目录对应的urlpath
 	OPR_DOWNLOAD = "download" //下载文件对应的urlpath
+	OPR_LIST = "list" //下载文件对应的urlpath
 
 	FILE_NAME_KEY = "filename"
 

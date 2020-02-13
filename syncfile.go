@@ -21,6 +21,13 @@ func main() {
 		GetFile(os.Args[2])
 	case PUSH_FILE:
 		fmt.Println("pushfile")
-		GetFile(os.Args[2])
+		PushFile(os.Args[2])
+	case LIST_FILE:
+		fmt.Println("list file")
+		GetList()
+	case GET_ALL_DEV:
+		fmt.Println("GET ALL")
+		GetAllDev()
 	}
+
 }
