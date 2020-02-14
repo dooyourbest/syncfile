@@ -15,7 +15,11 @@ func main() {
 		syncfile.WatchDir()
 	case syncfile.RUN_DEV:
 		fmt.Print("listen")
-		syncfile.Listen()
+		if syncfile.USE_HTTPS{
+			syncfile.ListenHttps()
+		}else{
+			syncfile.Listen()
+		}
 	case syncfile.GET_FILE:
 		fmt.Println("getfile")
 		syncfile.GetFile(os.Args[2])

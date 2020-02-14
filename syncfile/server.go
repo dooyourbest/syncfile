@@ -1,7 +1,10 @@
 package syncfile
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -56,4 +59,29 @@ func Listen() {
 	http.HandleFunc("/"+OPR_DOWNLOAD, download)
 	http.HandleFunc("/"+OPR_LIST, listFile)
 	http.ListenAndServe(":"+REMOTE_PORT, nil)
+}
+func ListenHttps(){
+	pool := x509.NewCertPool()
+	caCrt, err := ioutil.ReadFile(CA_CRT)
+	if err != nil {
+		fmt.Println("ReadFile err:", err)
+		return
+	}
+	pool.AppendCertsFromPEM(caCrt)
+	s := &http.Server{
+		Addr:    ":"+REMOTE_PORT,
+		TLSConfig: &tls.Config{
+			ClientCAs:  pool,
+			ClientAuth: tls.RequireAndVerifyClientCert,
+		},
+	}
+	http.HandleFunc("/"+OPR_CREATE, uploadServer)
+	http.HandleFunc("/"+OPR_REMOVE, rmfile)
+	http.HandleFunc("/"+OPR_DIR_ADD, adddir)
+	http.HandleFunc("/"+OPR_DOWNLOAD, download)
+	http.HandleFunc("/"+OPR_LIST, listFile)
+	err=s.ListenAndServeTLS(SERVRT_CRT,SERVER_KEY)
+	if err != nil {
+		fmt.Println("ListenAndServeTLS err:", err)
+	}
 }

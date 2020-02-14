@@ -1,6 +1,7 @@
 package syncfile
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"log"
@@ -20,6 +21,8 @@ type Client struct {
 	remoteUrl string
 	fileName  string
 	opreate   string
+	contentType string
+	bodyBuf *bytes.Buffer
 }
 
 func (c Client) post() (*http.Response, error) {

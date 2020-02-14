@@ -32,11 +32,13 @@ const (
 	//需要进行修改的内容
 	REMOTE_PORT    = "8081"                              //请求的port
 
-	REMOTE_HOST    = "http://localhost"                  //server端host
-	USE_HTTPS      = false //默认不使用https
+	REMOTE_HOST    = "https://localhost"                  //server端host
+	USE_HTTPS      = true //默认不使用https
 
-	localDirPath   = "/Users/zhangziang_cd/go/src/test1" //本地监听的目录 绝对路径
-	developDirPath = "/Users/zhangziang_cd/go/src/test"  //远程代码目录 绝对路径
+	//localDirPath   = "/Users/zhangziang_cd/go/src/test1" //本地监听的目录 绝对路径
+	localDirPath   = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\b" //本地监听的目录 绝对路径
+	//developDirPath = "/Users/zhangziang_cd/go/src/test"  //远程代码目录 绝对路径
+	developDirPath = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\a"  //远程代码目录 绝对路径
 
 
 

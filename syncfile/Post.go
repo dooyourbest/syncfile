@@ -2,6 +2,8 @@ package syncfile
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,6 +17,18 @@ import (
 //发送信息
 
 func postForm(c *Client) (*http.Response, error) {
+	var r http.Request
+	r.ParseForm()
+	r.Form.Add(FILE_NAME_KEY, c.fileName)
+	bodystr := strings.TrimSpace(r.Form.Encode())
+	request, err := http.NewRequest("POST", c.remoteUrl, strings.NewReader(bodystr))
+	if err != nil {
+	}
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := http.DefaultClient.Do(request)
+	return resp, err
+}
+func postFormHttps(c *Client) (*http.Response, error) {
 	var r http.Request
 	r.ParseForm()
 	r.Form.Add(FILE_NAME_KEY, c.fileName)
@@ -74,37 +88,33 @@ func uploadServer(w http.ResponseWriter, r *http.Request) {
 
 //发送信息并上传文件
 func uploadClient(client *Client) (*http.Response, error) {
-	bodyBuf := &bytes.Buffer{}
-	bodyWriter := multipart.NewWriter(bodyBuf)
-
-	//关键的一步操作
-	fileWriter, err := bodyWriter.CreateFormFile(FILE_NAME_KEY, client.fileName)
+	if USE_HTTPS{
+		return client.httpsPost()
+	}else{
+		return client.post()
+	}
+}
+func (client *Client)httpsPost()(* http.Response,error)  {
+	client.loadFile();
+	pool := x509.NewCertPool()
+	caCrt, err := ioutil.ReadFile(CA_CRT)
 	if err != nil {
-		fmt.Println("error writing to buffer")
-		return nil, err
+		fmt.Println("ReadFile err:", err)
+	}
+	pool.AppendCertsFromPEM(caCrt)
+	cliCrt, err := tls.LoadX509KeyPair(CLIENT_CRT,CLIENT_KEY)
+	if err != nil {
+		fmt.Println("Loadx509keypair err:", err)
 	}
 
-	//打开文件句柄操作
-	fh, err := os.Open(client.fileName)
-	if err != nil {
-		fmt.Println("error opening file")
-		return nil, err
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			RootCAs:      pool,
+			Certificates: []tls.Certificate{cliCrt},
+		},
 	}
-	defer fh.Close()
-
-	//iocopy
-	_, err = io.Copy(fileWriter, fh)
-	if err != nil {
-		fmt.Println("get err")
-		return nil, err
-	}
-
-	contentType := bodyWriter.FormDataContentType()
-	bodyWriter.Close()
-	resp, err := http.Post(client.remoteUrl, contentType, bodyBuf)
-	if err != nil {
-		return nil, err
-	}
+	httpclient :=&http.Client{Transport: tr}
+	resp, err := httpclient.Post(client.remoteUrl, client.contentType, client.bodyBuf)
 	defer resp.Body.Close()
 	resp_body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -113,4 +123,48 @@ func uploadClient(client *Client) (*http.Response, error) {
 	fmt.Println(resp.Status)
 	fmt.Println(string(resp_body))
 	return resp, err
+}
+
+func (client *Client)Post()(* http.Response,error)  {
+	resp, err := http.Post(client.remoteUrl, client.contentType, client.bodyBuf)
+	defer resp.Body.Close()
+	resp_body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(resp.Status)
+	fmt.Println(string(resp_body))
+	return resp, err
+}
+
+
+func (client *Client)loadFile( )(error)  {
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+
+	//关键的一步操作
+	fileWriter, err := bodyWriter.CreateFormFile(FILE_NAME_KEY, client.fileName)
+	if err != nil {
+		fmt.Println("error writing to buffer")
+		return err
+	}
+
+	//打开文件句柄操作
+	fh, err := os.Open(client.fileName)
+	if err != nil {
+		fmt.Println("error opening file")
+		return err
+	}
+	defer fh.Close()
+
+	//iocopy
+	_, err = io.Copy(fileWriter, fh)
+	if err != nil {
+		fmt.Println("get err")
+		return err
+	}
+	client.contentType = bodyWriter.FormDataContentType()
+	client.bodyBuf = bodyBuf
+	bodyWriter.Close()
+	return nil
 }
