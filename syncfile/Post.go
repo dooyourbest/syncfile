@@ -16,7 +16,15 @@ import (
 
 //发送信息
 
-func postForm(c *Client) (*http.Response, error) {
+func postForm(c *Client)(*http.Response, error){
+	if USE_HTTPS{
+		return postFormHttps(c)
+	}else{
+		return postFormHttp(c)
+	}
+}
+
+func postFormHttp(c *Client) (*http.Response, error) {
 	var r http.Request
 	r.ParseForm()
 	r.Form.Add(FILE_NAME_KEY, c.fileName)
@@ -28,16 +36,41 @@ func postForm(c *Client) (*http.Response, error) {
 	resp, err := http.DefaultClient.Do(request)
 	return resp, err
 }
+
 func postFormHttps(c *Client) (*http.Response, error) {
+	pool := x509.NewCertPool()
+	caCrt, err := ioutil.ReadFile(CA_CRT)
+	if err != nil {
+		fmt.Println("ReadFile err:", err)
+	}
+	pool.AppendCertsFromPEM(caCrt)
+	cliCrt, err := tls.LoadX509KeyPair(CLIENT_CRT,CLIENT_KEY)
+	if err != nil {
+		fmt.Println("Loadx509keypair err:", err)
+	}
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			RootCAs:      pool,
+			Certificates: []tls.Certificate{cliCrt},
+		},
+	}
+	httpclient :=&http.Client{Transport: tr}
+
 	var r http.Request
 	r.ParseForm()
 	r.Form.Add(FILE_NAME_KEY, c.fileName)
+	fmt.Println(c.fileName)
 	bodystr := strings.TrimSpace(r.Form.Encode())
-	request, err := http.NewRequest("POST", c.remoteUrl, strings.NewReader(bodystr))
+	c.contentType = "application/x-www-form-urlencoded"
+	resp, err := httpclient.Post(c.remoteUrl, c.contentType, strings.NewReader(bodystr))
+	defer resp.Body.Close()
+	resp_body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		return nil, err
 	}
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := http.DefaultClient.Do(request)
+	fmt.Println(resp.Status)
+	fmt.Println(string(resp_body))
 	return resp, err
 }
 
@@ -168,3 +201,14 @@ func (client *Client)loadFile( )(error)  {
 	bodyWriter.Close()
 	return nil
 }
+
+//func (c *Client)addMsg()error{
+//	var r http.Request
+//	r.ParseForm()
+//	r.Form.Add(FILE_NAME_KEY, c.fileName)
+//	bodystr := strings.TrimSpace(r.Form.Encode())
+//
+//	c.bodyBuf = bodystr
+//	return nil
+//}
+
