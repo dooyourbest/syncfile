@@ -13,8 +13,12 @@ import (
 func rmfile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("rm")
 	filename := r.PostFormValue(FILE_NAME_KEY)
+	fmt.Println(filename)
 	devPath := getDevPath(filename)
-	os.Remove(devPath)
+	err := os.Remove(devPath)
+	if err!=nil{
+		fmt.Println(err)
+	}
 }
 func adddir(w http.ResponseWriter, r *http.Request) {
 	filename := r.PostFormValue(FILE_NAME_KEY)

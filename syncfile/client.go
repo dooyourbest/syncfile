@@ -40,6 +40,7 @@ func (c Client) post() (*http.Response, error) {
 	return resp, err
 }
 
+
 //是否含有过滤词文件夹
 func isIgnorePath(dirName string, ignoreWord []string) bool {
 	flag := false
@@ -167,3 +168,5 @@ func WatchDir() {
 	w.watchDir(localDirPath)
 	select {}
 }
+
+

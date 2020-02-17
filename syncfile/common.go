@@ -35,11 +35,19 @@ const (
 	REMOTE_HOST    = "https://localhost"                  //server端host
 	USE_HTTPS      = true //默认不使用https
 
-	//localDirPath   = "/Users/zhangziang_cd/go/src/test1" //本地监听的目录 绝对路径
-	localDirPath   = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\b" //本地监听的目录 绝对路径
-	//developDirPath = "/Users/zhangziang_cd/go/src/test"  //远程代码目录 绝对路径
-	developDirPath = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\a"  //远程代码目录 绝对路径
+	localDirPath   = "/Users/zhangziang_cd/go/src/github.com/dooyourbest/syncfile/a" //本地监听的目录 绝对路径
+	//localDirPath   = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\b" //本地监听的目录 绝对路径
+	developDirPath = "/Users/zhangziang_cd/go/src/github.com/dooyourbest/syncfile/b"  //远程代码目录 绝对路径
+	//developDirPath = "C:\\Users\\Administrator\\go\\src\\github.com\\dooyourbest\\syncfile\\syncfile\\a"  //远程代码目录 绝对路径
+	CA_ROOT = "/Users/zhangziang_cd/go/src/github.com/dooyourbest/syncfile/syncfile/ca/"
+	CA_PATH = CA_ROOT+"ca.key"
+	CA_CRT = CA_ROOT+"ca.crt"
 
+	SERVER_KEY = CA_ROOT+"server.key"
+	SERVRT_CRT = CA_ROOT+"server.crt"
+
+	CLIENT_KEY = CA_ROOT+"client.key"
+	CLIENT_CRT = CA_ROOT+"client.crt"
 
 
 )
