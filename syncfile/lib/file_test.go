@@ -1,4 +1,4 @@
-package syncfile
+package lib
 
 import (
 	"testing"

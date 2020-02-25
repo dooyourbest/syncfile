@@ -1,8 +1,9 @@
-package syncfile
+package lib
 
 import (
 	"bufio"
 	"fmt"
+	"github.com/dooyourbest/syncfile/syncfile/cli"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -28,7 +29,7 @@ func GetFile(path string) {
 
 func GetList() {
 	var c Client
-	c.fileName = developDirPath+"/"+LIST_FILE_NAME
+	c.fileName = cli.Conf.Dev+"/"+ LIST_FILE_NAME
 	c.opreate = OPR_LIST
 	var resp *http.Response
 	resp, _ = c.post()
@@ -38,7 +39,7 @@ func GetList() {
 }
 func GetAllDev(){
 	GetList()
-	f,err :=os.Open(localDirPath+"/"+LIST_FILE_NAME)
+	f,err :=os.Open(cli.Conf.Local+"/"+ LIST_FILE_NAME)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

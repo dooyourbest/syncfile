@@ -1,14 +1,21 @@
-package syncfile
+package lib
 
 import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"github.com/dooyourbest/syncfile/syncfile/cli"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 )
+type SyncServer struct{
+	ca *Ca
+	config *cli.Config
+}
+var local string
+var dev string
 
 func rmfile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("rm")
@@ -32,8 +39,8 @@ func download(w http.ResponseWriter, r *http.Request) {
 
 func listFile(w http.ResponseWriter, r *http.Request){
 	fmt.Println(123)
-	rootPath := developDirPath
-	file, e := os.Create(developDirPath + "/" + LIST_FILE_NAME)
+	rootPath := dev
+	file, e := os.Create(dev + "/" + LIST_FILE_NAME)
 	if e != nil {
 		fmt.Println(e)
 		return
@@ -43,7 +50,7 @@ func listFile(w http.ResponseWriter, r *http.Request){
 	err := filepath.Walk(rootPath, func(path string, f os.FileInfo, err error) error {
 		if ( f == nil ) {return err}
 		if f.IsDir() {
-			path+=","+PATH_IS_DIR
+			path+=","+ PATH_IS_DIR
 		}else{
 			path+=","+ PATH_IS_FILE
 		}
@@ -56,24 +63,25 @@ func listFile(w http.ResponseWriter, r *http.Request){
 	downloadServer(w, r)
 }
 
-func Listen() {
+func Listen(server *SyncServer) {
 	http.HandleFunc("/"+OPR_CREATE, uploadServer)
 	http.HandleFunc("/"+OPR_REMOVE, rmfile)
 	http.HandleFunc("/"+OPR_DIR_ADD, adddir)
 	http.HandleFunc("/"+OPR_DOWNLOAD, download)
-	http.HandleFunc("/"+OPR_LIST, listFile)
-	http.ListenAndServe(":"+REMOTE_PORT, nil)
+	http.HandleFunc("/"+OPR_LIST, listFile,)
+	http.ListenAndServe(":"+server.config.Port, nil)
 }
-func ListenHttps(){
+func ListenHttps(server *SyncServer){
+	server.ca= NewCa(server.config.CaPath)
 	pool := x509.NewCertPool()
-	caCrt, err := ioutil.ReadFile(CA_CRT)
+	caCrt, err := ioutil.ReadFile(server.ca.ca_crt)
 	if err != nil {
 		fmt.Println("ReadFile err:", err)
 		return
 	}
 	pool.AppendCertsFromPEM(caCrt)
 	s := &http.Server{
-		Addr:    ":"+REMOTE_PORT,
+		Addr:    ":"+server.config.Host,
 		TLSConfig: &tls.Config{
 			ClientCAs:  pool,
 			ClientAuth: tls.RequireAndVerifyClientCert,
@@ -84,8 +92,19 @@ func ListenHttps(){
 	http.HandleFunc("/"+OPR_DIR_ADD, adddir)
 	http.HandleFunc("/"+OPR_DOWNLOAD, download)
 	http.HandleFunc("/"+OPR_LIST, listFile)
-	err=s.ListenAndServeTLS(SERVRT_CRT,SERVER_KEY)
+	err=s.ListenAndServeTLS(server.ca.server_crt,server.ca.server_key)
 	if err != nil {
 		fmt.Println("ListenAndServeTLS err:", err)
+	}
+}
+
+func RunListen(c *cli.Context){
+	s:= SyncServer{config:c.Config}
+	local=cli.Conf.Local
+	dev=cli.Conf.Dev
+	if c.Config.UseHttps==true{
+		ListenHttps(&s)
+	}else{
+		Listen(&s)
 	}
 }

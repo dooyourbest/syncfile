@@ -1,8 +1,9 @@
-package syncfile
+package lib
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/dooyourbest/syncfile/syncfile/cli"
 	"github.com/fsnotify/fsnotify"
 	"log"
 	"net/http"
@@ -23,13 +24,23 @@ type Client struct {
 	opreate   string
 	contentType string
 	bodyBuf *bytes.Buffer
+
+	Conf *cli.Config
+	Ca  *Ca
+}
+
+type Ca struct {
+	ca_path string
+	ca_crt string
+
+	server_key string
+	server_crt string
+
+	client_key string
+	client_crt string
 }
 
 func (c Client) post() (*http.Response, error) {
-	fmt.Print("client->post")
-	c.remoteUrl = REMOTE_HOST + ":" + REMOTE_PORT + "/" + c.opreate
-	fmt.Println(c.remoteUrl)
-	fmt.Println(c.opreate)
 	var resp *http.Response
 	var err error
 	if c.opreate == OPR_CREATE {
@@ -53,9 +64,9 @@ func isIgnorePath(dirName string, ignoreWord []string) bool {
 }
 
 //监控目录
-func (w *Watch) watchDir(dir string) {
+func (w *Watch) watchDir(c *Client) {
 	//通过Walk来遍历目录下的所有子目录
-	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	filepath.Walk(c.Conf.Local, func(path string, info os.FileInfo, err error) error {
 		//这里判断是否为目录，只需监控目录即可
 		//目录下的文件也在监控范围内，不需要我们一个一个加
 		if info.IsDir() {
@@ -73,7 +84,7 @@ func (w *Watch) watchDir(dir string) {
 		}
 		return nil
 	})
-	var c Client
+
 	go func() {
 		for {
 			select {
@@ -158,15 +169,23 @@ func (w *Watch) watchDir(dir string) {
 }
 
 //入口函数
-func WatchDir() {
+func WatchDir(c *cli.Context) {
 	//监控本地文件变化
 	watch, _ := fsnotify.NewWatcher()
 	w := Watch{
 		watch: watch,
 	}
+	client :=Client{
+		fileName:    "",
+		opreate:     "",
+		contentType: "",
+		bodyBuf:     nil,
+		Conf:       c.Config,
+	}
+	w.watchDir(&client)
+	select {
 
-	w.watchDir(localDirPath)
-	select {}
+	}
 }
 
 

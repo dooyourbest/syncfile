@@ -1,5 +1,6 @@
-package syncfile
+package lib
 
+import "C"
 import (
 	"bytes"
 	"crypto/tls"
@@ -17,7 +18,7 @@ import (
 //发送信息
 
 func postForm(c *Client)(*http.Response, error){
-	if USE_HTTPS{
+	if c.Conf.UseHttps{
 		return postFormHttps(c)
 	}else{
 		return postFormHttp(c)
@@ -39,12 +40,13 @@ func postFormHttp(c *Client) (*http.Response, error) {
 
 func postFormHttps(c *Client) (*http.Response, error) {
 	pool := x509.NewCertPool()
-	caCrt, err := ioutil.ReadFile(CA_CRT)
+	c.Ca=NewCa(c.Conf.CaPath)
+	caCrt, err := ioutil.ReadFile(c.Ca.ca_crt)
 	if err != nil {
 		fmt.Println("ReadFile err:", err)
 	}
 	pool.AppendCertsFromPEM(caCrt)
-	cliCrt, err := tls.LoadX509KeyPair(CLIENT_CRT,CLIENT_KEY)
+	cliCrt, err := tls.LoadX509KeyPair(c.Ca.client_crt,c.Ca.client_key)
 	if err != nil {
 		fmt.Println("Loadx509keypair err:", err)
 	}
@@ -121,21 +123,33 @@ func uploadServer(w http.ResponseWriter, r *http.Request) {
 
 //发送信息并上传文件
 func uploadClient(client *Client) (*http.Response, error) {
-	if USE_HTTPS{
+	client.loadFile()
+	if client.Conf.UseHttps{
 		return client.httpsPost()
 	}else{
-		return client.post()
+		return client.httpPost()
 	}
 }
+func NewCa(caRootPath string)*Ca{
+	return &Ca{
+		ca_crt:caRootPath+"ca.crt",
+		ca_path:caRootPath+"ca.key",
+		server_crt:caRootPath+"server.crt",
+		server_key:caRootPath+"server.key",
+		client_crt:caRootPath+"client.crt",
+		client_key:caRootPath+"client.key",
+	}
+
+}
 func (client *Client)httpsPost()(* http.Response,error)  {
-	client.loadFile();
+	client.Ca=NewCa(client.Conf.CaPath)
 	pool := x509.NewCertPool()
-	caCrt, err := ioutil.ReadFile(CA_CRT)
+	caCrt, err := ioutil.ReadFile(client.Ca.ca_crt)
 	if err != nil {
 		fmt.Println("ReadFile err:", err)
 	}
 	pool.AppendCertsFromPEM(caCrt)
-	cliCrt, err := tls.LoadX509KeyPair(CLIENT_CRT,CLIENT_KEY)
+	cliCrt, err := tls.LoadX509KeyPair(client.Ca.client_crt,client.Ca.client_key)
 	if err != nil {
 		fmt.Println("Loadx509keypair err:", err)
 	}
@@ -158,7 +172,8 @@ func (client *Client)httpsPost()(* http.Response,error)  {
 	return resp, err
 }
 
-func (client *Client)Post()(* http.Response,error)  {
+func (client *Client)httpPost()(* http.Response,error)  {
+	client.remoteUrl = "http://"+client.Conf.Host + ":" + client.Conf.Port + "/" + client.opreate
 	resp, err := http.Post(client.remoteUrl, client.contentType, client.bodyBuf)
 	defer resp.Body.Close()
 	resp_body, err := ioutil.ReadAll(resp.Body)
@@ -202,13 +217,4 @@ func (client *Client)loadFile( )(error)  {
 	return nil
 }
 
-//func (c *Client)addMsg()error{
-//	var r http.Request
-//	r.ParseForm()
-//	r.Form.Add(FILE_NAME_KEY, c.fileName)
-//	bodystr := strings.TrimSpace(r.Form.Encode())
-//
-//	c.bodyBuf = bodystr
-//	return nil
-//}
 
